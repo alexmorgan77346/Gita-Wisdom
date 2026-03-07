@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 144 144" width="144" height="144">
+<circle cx="72" cy="72" r="72" fill="#E8732A"/>
+<circle cx="72" cy="72" r="61" fill="#D4A017" fill-opacity="0.25"/>
+<ellipse cx="72" cy="44" rx="11" ry="22" fill="white" fill-opacity="0.9"/>
+<ellipse cx="72" cy="44" rx="11" ry="22" fill="white" fill-opacity="0.6" transform="rotate(45 72 72)"/>
+<ellipse cx="72" cy="44" rx="11" ry="22" fill="white" fill-opacity="0.6" transform="rotate(90 72 72)"/>
+<ellipse cx="72" cy="44" rx="11" ry="22" fill="white" fill-opacity="0.6" transform="rotate(135 72 72)"/>
+<ellipse cx="72" cy="44" rx="11" ry="22" fill="white" fill-opacity="0.9" transform="rotate(180 72 72)"/>
+<ellipse cx="72" cy="44" rx="11" ry="22" fill="white" fill-opacity="0.6" transform="rotate(225 72 72)"/>
+<ellipse cx="72" cy="44" rx="11" ry="22" fill="white" fill-opacity="0.6" transform="rotate(270 72 72)"/>
+<ellipse cx="72" cy="44" rx="11" ry="22" fill="white" fill-opacity="0.6" transform="rotate(315 72 72)"/>
+<circle cx="72" cy="72" r="15" fill="#FDF6E3"/>
+<text x="72" y="80" font-family="serif" font-size="20" text-anchor="middle" fill="#E8732A">ॐ</text>
+</svg>
