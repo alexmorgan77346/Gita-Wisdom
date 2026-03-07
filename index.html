@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#E8732A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Gita Wisdom">
+<meta name="description" content="Bhagavad Gita — All 18 Chapters, 700 verses in Sanskrit, English and Hindi. Full offline PWA.">
+<title>Gita Wisdom — भगवद्गीता</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192x192.svg">
+<link rel="icon" type="image/svg+xml" href="icons/icon-96x96.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+Devanagari:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{--saffron:#E8732A;--saffron-light:#F09040;--saffron-deep:#C4511A;--gold:#D4A017;--gold-light:#F0C040;--gold-pale:#FBF0CC;--cream:#FDF6E3;--cream-dark:#F5E8C5;--brown:#6B3A2A;--brown-light:#8B5A3A;--ink:#2C1810;--ink-light:#5C3820;--shadow-warm:rgba(180,80,20,0.15);--shadow-gold:rgba(212,160,23,0.2);--tr:0.3s cubic-bezier(0.4,0,0.2,1);--r:14px;}
+[data-theme="dark"]{--cream:#1A120A;--cream-dark:#251810;--gold-pale:#2A1E08;--ink:#F0DEB8;--ink-light:#C8A870;--brown:#D4A060;--brown-light:#C08850;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+body{font-family:'Crimson Pro',Georgia,serif;background:var(--cream);color:var(--ink);min-height:100vh;overflow-x:hidden;transition:background var(--tr),color var(--tr);}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 15% 10%,rgba(232,115,42,0.07) 0%,transparent 50%),radial-gradient(ellipse at 85% 90%,rgba(212,160,23,0.08) 0%,transparent 50%);pointer-events:none;z-index:0;}
+#app{position:relative;z-index:1;}
+
+/* LOADING */
+#loader{position:fixed;inset:0;background:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s ease;}
+#loader.hide{opacity:0;pointer-events:none;}
+.loader-om{font-family:'Noto Serif Devanagari',serif;font-size:5rem;color:var(--saffron);animation:pulse 1.5s ease-in-out infinite;}
+.loader-text{font-family:'Cinzel Decorative',serif;font-size:1.1rem;color:var(--brown);margin-top:16px;}
+.loader-sub{font-size:0.9rem;color:var(--ink-light);margin-top:8px;font-style:italic;}
+.loader-bar{width:200px;height:3px;background:var(--cream-dark);border-radius:3px;margin-top:24px;overflow:hidden;}
+.loader-bar-fill{height:100%;background:linear-gradient(90deg,var(--saffron),var(--gold));border-radius:3px;animation:loadbar 1.8s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:0.3;transform:scale(0.95);}50%{opacity:1;transform:scale(1.05);}}
+@keyframes loadbar{0%{width:0%;margin-left:0;}50%{width:70%;margin-left:0;}100%{width:0%;margin-left:100%;}}
+
+/* HEADER */
+header{background:linear-gradient(135deg,var(--saffron-deep) 0%,var(--saffron) 45%,var(--gold) 100%);position:sticky;top:0;z-index:200;box-shadow:0 4px 24px rgba(150,50,10,0.35);}
+.hband{height:3px;background:linear-gradient(90deg,var(--gold-light),white,var(--gold-light));}
+.hinner{max-width:1200px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer;flex-shrink:0;}
+.logo svg{width:40px;height:40px;flex-shrink:0;}
+.logo h1{font-family:'Cinzel Decorative',serif;font-size:1.15rem;color:white;line-height:1.1;text-shadow:0 1px 4px rgba(0,0,0,0.25);}
+.logo span{font-family:'Noto Serif Devanagari',serif;font-size:0.8rem;color:rgba(255,255,255,0.85);display:block;}
+.hcontrols{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.ltoggle{display:flex;align-items:center;background:rgba(255,255,255,0.12);border-radius:50px;padding:3px;border:1.5px solid rgba(255,255,255,0.3);}
+.lbtn{padding:4px 12px;border-radius:50px;border:none;background:transparent;color:rgba(255,255,255,0.7);font-family:'Crimson Pro',serif;font-size:0.88rem;cursor:pointer;transition:all var(--tr);}
+.lbtn.on{background:rgba(255,255,255,0.92);color:var(--saffron-deep);font-weight:600;}
+.dbtn{width:34px;height:34px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.35);background:rgba(255,255,255,0.12);color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--tr);font-size:0.95rem;}
+.dbtn:hover{background:rgba(255,255,255,0.25);}
+nav{background:rgba(0,0,0,0.1);border-top:1px solid rgba(255,255,255,0.15);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+nav::-webkit-scrollbar{display:none;}
+.ninner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;min-width:max-content;}
+.nbtn{padding:9px 16px;background:none;border:none;color:rgba(255,255,255,0.72);font-family:'Crimson Pro',serif;font-size:0.92rem;cursor:pointer;transition:all var(--tr);position:relative;white-space:nowrap;}
+.nbtn::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:0;height:2px;background:white;transition:width var(--tr);border-radius:2px;}
+.nbtn.on,.nbtn:hover{color:white;}
+.nbtn.on::after,.nbtn:hover::after{width:65%;}
+
+/* MAIN */
+main{max-width:1200px;margin:0 auto;padding:32px 20px 80px;}
+.page{display:none;}
+.page.on{display:block;animation:fadeUp 0.35s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+
+/* HERO */
+.hero{text-align:center;padding:40px 16px 48px;position:relative;}
+.hero-om{font-size:clamp(3rem,10vw,6rem);color:var(--saffron);opacity:0.08;position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-family:'Noto Serif Devanagari',serif;user-select:none;pointer-events:none;line-height:1;}
+.badge{display:inline-block;padding:4px 18px;background:linear-gradient(135deg,var(--gold-pale),var(--cream-dark));border:1px solid var(--gold);border-radius:50px;font-size:0.82rem;color:var(--brown);margin-bottom:18px;letter-spacing:0.08em;}
+.hero h2{font-family:'Cinzel Decorative',serif;font-size:clamp(1.5rem,4.5vw,3rem);color:var(--saffron-deep);margin-bottom:6px;line-height:1.2;}
+.hero-hi{font-family:'Noto Serif Devanagari',serif;font-size:clamp(1rem,2.5vw,1.6rem);color:var(--brown-light);margin-bottom:20px;}
+.hdiv{display:flex;align-items:center;gap:14px;max-width:440px;margin:0 auto 20px;}
+.hdiv::before,.hdiv::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold));}
+.hdiv::after{background:linear-gradient(90deg,var(--gold),transparent);}
+.hero p{max-width:640px;margin:0 auto 28px;font-size:1.08rem;line-height:1.8;color:var(--ink-light);font-style:italic;}
+
+/* STATS BAR */
+.stats-bar{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;margin-bottom:36px;}
+.stat{text-align:center;}
+.stat-num{font-family:'Cinzel Decorative',serif;font-size:1.6rem;color:var(--saffron);line-height:1;}
+.stat-label{font-size:0.8rem;color:var(--brown-light);margin-top:2px;}
+
+/* DAILY VERSE */
+.dcard{max-width:660px;margin:0 auto 40px;background:linear-gradient(135deg,var(--gold-pale),var(--cream-dark));border:1px solid var(--gold);border-radius:var(--r);padding:24px 28px;position:relative;overflow:hidden;cursor:pointer;transition:transform var(--tr),box-shadow var(--tr);}
+.dcard:hover{transform:translateY(-3px);box-shadow:0 12px 40px var(--shadow-gold);}
+.dcard::before{content:'✦';position:absolute;top:-8px;right:16px;font-size:5rem;color:var(--gold);opacity:0.07;line-height:1;}
+.dtag{font-size:0.78rem;letter-spacing:0.12em;color:var(--saffron);text-transform:uppercase;margin-bottom:10px;}
+.dsk{font-family:'Noto Serif Devanagari',serif;font-size:1rem;color:var(--brown);margin-bottom:10px;line-height:1.8;}
+.dtr{font-size:0.97rem;color:var(--ink-light);font-style:italic;line-height:1.7;}
+.dref{margin-top:10px;font-size:0.82rem;color:var(--saffron);}
+
+/* SECTION HEADERS */
+.stitle{font-family:'Cinzel Decorative',serif;font-size:1.3rem;color:var(--saffron-deep);margin-bottom:6px;}
+.ssub{font-size:0.95rem;color:var(--brown-light);margin-bottom:24px;}
+
+/* CHAPTER GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:40px;}
+@media(max-width:500px){.grid{grid-template-columns:repeat(2,1fr);gap:10px;}}
+.ccard{background:var(--cream-dark);border:1px solid rgba(212,160,23,0.28);border-radius:var(--r);padding:18px 14px;cursor:pointer;transition:all var(--tr);position:relative;overflow:hidden;}
+.ccard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--saffron),var(--gold));transform:scaleX(0);transition:transform var(--tr);transform-origin:left;}
+.ccard:hover{transform:translateY(-4px);box-shadow:0 8px 28px var(--shadow-warm);border-color:var(--gold);}
+.ccard:hover::before{transform:scaleX(1);}
+.cnum{font-family:'Cinzel Decorative',serif;font-size:1.8rem;color:var(--saffron);opacity:0.35;line-height:1;margin-bottom:8px;}
+.cname{font-size:0.9rem;font-weight:600;color:var(--ink);margin-bottom:3px;line-height:1.3;}
+.cname-hi{font-family:'Noto Serif Devanagari',serif;font-size:0.82rem;color:var(--brown-light);line-height:1.4;}
+.cvc{margin-top:8px;font-size:0.76rem;color:var(--saffron);opacity:0.75;}
+
+/* CHAPTER DETAIL */
+.ch-hdr{padding:28px 0 20px;border-bottom:1px solid rgba(212,160,23,0.3);margin-bottom:28px;}
+.back-btn{display:inline-flex;align-items:center;gap:7px;padding:6px 15px;border:1px solid var(--gold);border-radius:50px;background:transparent;color:var(--brown);font-family:'Crimson Pro',serif;font-size:0.92rem;cursor:pointer;transition:all var(--tr);margin-bottom:18px;}
+.back-btn:hover{background:var(--gold-pale);transform:translateX(-3px);}
+.ch-lbl{font-size:0.8rem;color:var(--saffron);letter-spacing:0.1em;margin-bottom:5px;}
+.ch-ttl{font-family:'Cinzel Decorative',serif;font-size:clamp(1.2rem,3vw,2rem);color:var(--saffron-deep);margin-bottom:5px;}
+.ch-hi{font-family:'Noto Serif Devanagari',serif;font-size:1.1rem;color:var(--brown-light);margin-bottom:10px;}
+.ch-sub{font-size:0.97rem;color:var(--ink-light);font-style:italic;margin-bottom:14px;}
+.ch-sum{max-width:700px;font-size:1.02rem;line-height:1.75;color:var(--ink-light);padding:14px 18px;border-left:3px solid var(--saffron);background:var(--gold-pale);border-radius:0 8px 8px 0;}
+
+/* VERSE PAGINATION */
+.vpager{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px;padding:12px 16px;background:var(--gold-pale);border:1px solid rgba(212,160,23,0.3);border-radius:var(--r);}
+.vpager-info{font-size:0.9rem;color:var(--brown);}
+.vpager-btns{display:flex;gap:8px;}
+.pg-btn{padding:6px 16px;border-radius:50px;border:1px solid var(--gold);background:transparent;color:var(--brown);font-family:'Crimson Pro',serif;font-size:0.88rem;cursor:pointer;transition:all var(--tr);}
+.pg-btn:hover:not(:disabled){background:var(--gold-pale);border-color:var(--saffron);}
+.pg-btn:disabled{opacity:0.4;cursor:default;}
+.pg-btn.active{background:linear-gradient(135deg,var(--saffron),var(--gold));border-color:transparent;color:white;}
+
+/* VERSE CARDS */
+.vlist{display:flex;flex-direction:column;gap:18px;}
+.vcard{background:var(--cream-dark);border:1px solid rgba(212,160,23,0.22);border-radius:var(--r);padding:22px 24px;transition:all var(--tr);}
+@media(max-width:480px){.vcard{padding:16px;}}
+.vcard:hover{box-shadow:0 5px 20px var(--shadow-warm);border-color:rgba(212,160,23,0.45);}
+.vmeta{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.vnum{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:32px;padding:0 10px;background:linear-gradient(135deg,var(--saffron),var(--gold));border-radius:50px;color:white;font-size:0.78rem;font-weight:600;flex-shrink:0;}
+.vref{font-size:0.8rem;color:var(--saffron);letter-spacing:0.05em;}
+.vsk{font-family:'Noto Serif Devanagari',serif;font-size:1rem;line-height:1.9;color:var(--brown);margin-bottom:14px;padding:12px 15px;background:rgba(212,160,23,0.07);border-radius:8px;border-left:3px solid var(--gold);white-space:pre-line;}
+.vtr{font-size:1.02rem;line-height:1.75;color:var(--ink);margin-bottom:10px;font-style:italic;}
+.vmn{font-size:0.95rem;line-height:1.7;color:var(--ink-light);padding-top:12px;border-top:1px dashed rgba(212,160,23,0.35);display:none;}
+.vmn.open{display:block;}
+.vact{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.bsm{padding:5px 14px;border-radius:50px;border:1px solid rgba(212,160,23,0.38);background:transparent;color:var(--brown-light);font-family:'Crimson Pro',serif;font-size:0.86rem;cursor:pointer;transition:all var(--tr);}
+.bsm:hover{background:var(--gold-pale);border-color:var(--gold);color:var(--brown);}
+.bsm.bkd{background:linear-gradient(135deg,var(--saffron),var(--gold));border-color:transparent;color:white;}
+
+/* SEARCH */
+.swrap{max-width:700px;}
+.srow{display:flex;gap:10px;margin-bottom:24px;}
+.sinput{flex:1;min-width:0;padding:13px 18px;border:1.5px solid rgba(212,160,23,0.38);border-radius:50px;background:var(--cream-dark);color:var(--ink);font-family:'Crimson Pro',serif;font-size:1rem;outline:none;transition:all var(--tr);}
+.sinput:focus{border-color:var(--saffron);box-shadow:0 0 0 3px rgba(232,115,42,0.1);}
+.sinput::placeholder{color:var(--ink-light);opacity:0.5;}
+.bpri{padding:13px 22px;border-radius:50px;border:none;background:linear-gradient(135deg,var(--saffron),var(--gold));color:white;font-family:'Crimson Pro',serif;font-size:0.97rem;font-weight:600;cursor:pointer;transition:all var(--tr);white-space:nowrap;flex-shrink:0;}
+.bpri:hover{transform:translateY(-2px);box-shadow:0 6px 18px var(--shadow-warm);}
+.sresults{display:flex;flex-direction:column;gap:14px;}
+.rmeta{font-size:0.8rem;color:var(--saffron);margin-bottom:5px;letter-spacing:0.04em;}
+
+/* CHAT */
+.cwrap{max-width:680px;}
+.cintro{background:var(--gold-pale);border:1px solid rgba(212,160,23,0.28);border-radius:var(--r) var(--r) 0 0;padding:18px 22px;border-bottom:none;}
+.cintro h3{font-family:'Cinzel Decorative',serif;font-size:0.97rem;color:var(--saffron-deep);margin-bottom:7px;}
+.cintro p{font-size:0.9rem;color:var(--ink-light);line-height:1.6;margin-bottom:7px;}
+.cexs{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px;}
+.cex{padding:3px 11px;border-radius:50px;border:1px solid rgba(232,115,42,0.38);background:rgba(232,115,42,0.07);color:var(--saffron-deep);font-family:'Crimson Pro',serif;font-size:0.86rem;cursor:pointer;transition:all var(--tr);font-style:italic;}
+.cex:hover{background:rgba(232,115,42,0.15);}
+.cwin{background:var(--cream-dark);border:1px solid rgba(212,160,23,0.28);border-top:none;border-bottom:none;min-height:280px;max-height:460px;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth;}
+.cmsg{animation:fadeUp 0.25s ease;}
+.cmsg.u .mb{background:linear-gradient(135deg,var(--saffron),var(--saffron-light));color:white;border-radius:16px 16px 3px 16px;padding:9px 15px;align-self:flex-end;max-width:82%;margin-left:auto;font-size:0.94rem;}
+.cmsg.b .mb{background:var(--cream);border:1px solid rgba(212,160,23,0.28);border-radius:3px 16px 16px 16px;padding:14px 18px;max-width:97%;font-size:0.94rem;box-shadow:0 2px 8px var(--shadow-gold);}
+[data-theme="dark"] .cmsg.b .mb{background:var(--gold-pale);}
+.cmsg.b .mb .vsk{margin-top:10px;font-size:0.93rem;}
+.cmsg.b .mb .vtr{margin-top:8px;font-size:0.93rem;}
+.cmsg.b .mb .vmn{display:block;margin-top:8px;font-size:0.88rem;padding-top:8px;}
+.cia{display:flex;gap:9px;padding:12px;background:var(--cream-dark);border:1px solid rgba(212,160,23,0.28);border-top:1px solid rgba(212,160,23,0.15);border-radius:0 0 var(--r) var(--r);}
+.ci{flex:1;min-width:0;padding:10px 16px;border:1.5px solid rgba(212,160,23,0.28);border-radius:50px;background:var(--cream);color:var(--ink);font-family:'Crimson Pro',serif;font-size:0.97rem;outline:none;transition:all var(--tr);}
+.ci:focus{border-color:var(--saffron);box-shadow:0 0 0 3px rgba(232,115,42,0.1);}
+.csend{width:40px;height:40px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--saffron),var(--gold));color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--tr);font-size:0.95rem;flex-shrink:0;}
+.csend:hover{transform:scale(1.1);box-shadow:0 4px 12px var(--shadow-warm);}
+
+/* BOOKMARKS */
+.bkempty{text-align:center;padding:56px 20px;color:var(--ink-light);}
+.bkempty .ei{font-size:2.8rem;margin-bottom:14px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(30px);padding:11px 24px;background:var(--ink);color:var(--cream);border-radius:50px;font-size:0.88rem;z-index:1000;opacity:0;transition:all var(--tr);pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* INSTALL BANNER */
+#ibanner{display:none;position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,var(--saffron-deep),var(--saffron));color:white;padding:14px 20px;z-index:500;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 -4px 20px rgba(0,0,0,0.2);}
+#ibanner.show{display:flex;}
+#ibanner p{font-size:0.92rem;flex:1;}
+.ibbtns{display:flex;gap:8px;flex-shrink:0;}
+.ibbtn{padding:7px 16px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.6);background:rgba(255,255,255,0.15);color:white;font-family:'Crimson Pro',serif;font-size:0.9rem;cursor:pointer;transition:all var(--tr);}
+.ibbtn.p{background:white;color:var(--saffron-deep);border-color:transparent;font-weight:600;}
+
+/* MISC */
+.empty{text-align:center;padding:36px;color:var(--ink-light);font-style:italic;}
+hr.vs{border:none;border-top:1px dashed rgba(212,160,23,0.3);margin:14px 0;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--cream);}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div id="loader">
+  <div class="loader-om">ॐ</div>
+  <div class="loader-text">Gita Wisdom</div>
+  <div class="loader-sub en">Loading sacred scripture…</div>
+  <div class="loader-sub hi" style="display:none">पवित्र शास्त्र लोड हो रहा है…</div>
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+</div>
+
+<div id="app" style="display:none">
+<header>
+  <div class="hband"></div>
+  <div class="hinner">
+    <div class="logo" onclick="showPage('home')">
+      <svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="21" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/><ellipse cx="22" cy="13" rx="4.5" ry="8" fill="rgba(255,255,255,0.85)"/><ellipse cx="22" cy="13" rx="4.5" ry="8" fill="rgba(255,255,255,0.55)" transform="rotate(45 22 22)"/><ellipse cx="22" cy="13" rx="4.5" ry="8" fill="rgba(255,255,255,0.55)" transform="rotate(90 22 22)"/><ellipse cx="22" cy="13" rx="4.5" ry="8" fill="rgba(255,255,255,0.55)" transform="rotate(135 22 22)"/><ellipse cx="22" cy="13" rx="4.5" ry="8" fill="rgba(255,255,255,0.85)" transform="rotate(180 22 22)"/><ellipse cx="22" cy="13" rx="4.5" ry="8" fill="rgba(255,255,255,0.55)" transform="rotate(225 22 22)"/><ellipse cx="22" cy="13" rx="4.5" ry="8" fill="rgba(255,255,255,0.55)" transform="rotate(270 22 22)"/><ellipse cx="22" cy="13" rx="4.5" ry="8" fill="rgba(255,255,255,0.55)" transform="rotate(315 22 22)"/><circle cx="22" cy="22" r="5.5" fill="rgba(255,255,255,0.95)"/></svg>
+      <div><h1>Gita Wisdom</h1><span>भगवद्गीता</span></div>
+    </div>
+    <div class="hcontrols">
+      <div class="ltoggle">
+        <button class="lbtn on" id="lEN" onclick="setLang('en')">EN</button>
+        <button class="lbtn" id="lHI" onclick="setLang('hi')">हिंदी</button>
+      </div>
+      <button class="dbtn" id="dbtn" onclick="toggleDark()">🌙</button>
+    </div>
+  </div>
+  <nav><div class="ninner" id="ninner">
+    <button class="nbtn on" data-p="home" onclick="showPage('home')"><span class="en">Home</span><span class="hi" style="display:none">मुख्य</span></button>
+    <button class="nbtn" data-p="chapters" onclick="showPage('chapters')"><span class="en">Chapters</span><span class="hi" style="display:none">अध्याय</span></button>
+    <button class="nbtn" data-p="search" onclick="showPage('search')"><span class="en">Search</span><span class="hi" style="display:none">खोज</span></button>
+    <button class="nbtn" data-p="chat" onclick="showPage('chat')"><span class="en">Chat Guide</span><span class="hi" style="display:none">संवाद</span></button>
+    <button class="nbtn" data-p="bookmarks" onclick="showPage('bookmarks')"><span class="en">Bookmarks</span><span class="hi" style="display:none">बुकमार्क</span></button>
+  </div></nav>
+</header>
+
+<div class="toast" id="toast"></div>
+<div id="ibanner">
+  <p>📖 <span class="en">Install Gita Wisdom for offline reading!</span><span class="hi" style="display:none">ऑफलाइन पढ़ने के लिए इंस्टॉल करें!</span></p>
+  <div class="ibbtns">
+    <button class="ibbtn" onclick="document.getElementById('ibanner').classList.remove('show')"><span class="en">Later</span><span class="hi" style="display:none">बाद में</span></button>
+    <button class="ibbtn p" id="ibtn"><span class="en">Install</span><span class="hi" style="display:none">इंस्टॉल</span></button>
+  </div>
+</div>
+
+<main>
+  <!-- HOME -->
+  <div class="page on" id="page-home">
+    <div class="hero">
+      <div class="hero-om">ॐ</div>
+      <div class="badge">✦ Sacred Scripture of India ✦</div>
+      <h2>Bhagavad Gita Wisdom</h2>
+      <div class="hero-hi">भगवद्गीता ज्ञान</div>
+      <div class="hdiv"><span style="color:var(--gold);font-size:1.3rem">❈</span></div>
+      <p class="en">"You have a right to perform your prescribed duties, but you are not entitled to the fruits of your actions." — The eternal wisdom of the Gita guides humanity across the ages.</p>
+      <p class="hi" style="display:none">"कर्मण्येवाधिकारस्ते मा फलेषु कदाचन।" — गीता का शाश्वत ज्ञान युगों से मानवता का मार्गदर्शन करता है।</p>
+    </div>
+    <div class="stats-bar">
+      <div class="stat"><div class="stat-num">18</div><div class="stat-label en">Chapters</div><div class="stat-label hi" style="display:none">अध्याय</div></div>
+      <div class="stat"><div class="stat-num" id="total-v">700</div><div class="stat-label en">Verses</div><div class="stat-label hi" style="display:none">श्लोक</div></div>
+      <div class="stat"><div class="stat-num">3</div><div class="stat-label en">Languages</div><div class="stat-label hi" style="display:none">भाषाएं</div></div>
+      <div class="stat"><div class="stat-num">∞</div><div class="stat-label en">Wisdom</div><div class="stat-label hi" style="display:none">ज्ञान</div></div>
+    </div>
+    <div class="dcard" id="dcard" onclick="openDailyVerse()">
+      <div class="dtag en">✦ Today's Verse</div>
+      <div class="dtag hi" style="display:none">✦ आज का श्लोक</div>
+      <div class="dsk" id="dv-sk">Loading…</div>
+      <div class="dtr" id="dv-tr"></div>
+      <div class="dref" id="dv-ref"></div>
+    </div>
+    <div class="stitle en">All 18 Chapters</div>
+    <div class="stitle hi" style="display:none">सभी 18 अध्याय</div>
+    <div class="ssub en">Explore the complete Bhagavad Gita</div>
+    <div class="ssub hi" style="display:none;font-family:'Noto Serif Devanagari',serif">सम्पूर्ण भगवद्गीता का अन्वेषण करें</div>
+    <div class="grid" id="grid-home"></div>
+  </div>
+
+  <!-- CHAPTERS -->
+  <div class="page" id="page-chapters">
+    <div class="stitle en">18 Chapters</div>
+    <div class="stitle hi" style="display:none">18 अध्याय</div>
+    <div class="ssub en">Click any chapter to read all its verses</div>
+    <div class="ssub hi" style="display:none;font-family:'Noto Serif Devanagari',serif">किसी भी अध्याय पर क्लिक करें</div>
+    <div class="grid" id="grid-chapters"></div>
+  </div>
+
+  <!-- CHAPTER DETAIL -->
+  <div class="page" id="page-detail">
+    <div class="ch-hdr" id="ch-hdr"></div>
+    <div id="ch-pager"></div>
+    <div class="vlist" id="ch-verses"></div>
+    <div id="ch-pager-bot"></div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="page" id="page-search">
+    <div class="stitle en">Search</div>
+    <div class="stitle hi" style="display:none">खोज</div>
+    <div class="ssub en">Search across all 700 verses in Sanskrit, English or Hindi</div>
+    <div class="ssub hi" style="display:none;font-family:'Noto Serif Devanagari',serif">सभी श्लोकों में खोजें</div>
+    <div class="swrap">
+      <div class="srow">
+        <input type="search" class="sinput" id="si" placeholder="karma, soul, duty, आत्मा…" oninput="liveSearch(this.value)" onkeydown="if(event.key==='Enter')doSearch()">
+        <button class="bpri" onclick="doSearch()"><span class="en">Search</span><span class="hi" style="display:none">खोजें</span></button>
+      </div>
+      <div class="sresults" id="sres"></div>
+    </div>
+  </div>
+
+  <!-- CHAT -->
+  <div class="page" id="page-chat">
+    <div class="stitle en">Chat Guide</div>
+    <div class="stitle hi" style="display:none">संवाद सहायक</div>
+    <div class="ssub en">Retrieve any verse with simple commands</div>
+    <div class="ssub hi" style="display:none">सरल आदेशों से श्लोक प्राप्त करें</div>
+    <div class="cwrap">
+      <div class="cintro">
+        <h3 class="en">Commands</h3><h3 class="hi" style="display:none">आदेश</h3>
+        <p class="en">Type a command to retrieve any verse instantly:</p>
+        <p class="hi" style="display:none">कोई भी श्लोक तुरंत प्राप्त करने के लिए आदेश टाइप करें:</p>
+        <div class="cexs">
+          <button class="cex" onclick="fillChat('ch2 v47')">ch2 v47</button>
+          <button class="cex" onclick="fillChat('ch18 v66')">ch18 v66</button>
+          <button class="cex" onclick="fillChat('ch1 all')">ch1 all</button>
+          <button class="cex" onclick="fillChat('ch2')">ch2</button>
+          <button class="cex" onclick="fillChat('random')">random</button>
+          <button class="cex" onclick="fillChat('daily')">daily</button>
+          <button class="cex" onclick="fillChat('chapters')">chapters</button>
+          <button class="cex" onclick="fillChat('help')">help</button>
+        </div>
+      </div>
+      <div class="cwin" id="cwin">
+        <div class="cmsg b"><div class="mb">
+          <strong class="en">🙏 Namaste! I am your Gita guide.</strong>
+          <strong class="hi" style="display:none">🙏 नमस्ते! मैं आपका गीता मार्गदर्शक हूँ।</strong><br><br>
+          <span class="en">Use commands like <em>ch2 v47</em> or <em>ch18 v66</em>. Type <em>help</em> to see all commands.</span>
+          <span class="hi" style="display:none"><em>ch2 v47</em> जैसे आदेश उपयोग करें। सभी आदेशों के लिए <em>help</em> टाइप करें।</span>
+        </div></div>
+      </div>
+      <div class="cia">
+        <input type="text" class="ci" id="ci" placeholder="ch2 v47…" onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="csend" onclick="sendChat()">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOOKMARKS -->
+  <div class="page" id="page-bookmarks">
+    <div class="stitle en">Bookmarks</div>
+    <div class="stitle hi" style="display:none">बुकमार्क</div>
+    <div id="bklist"></div>
+  </div>
+</main>
+</div>
+
+<script>
+// ===== STATE =====
+let GITA = null;
+let lang = localStorage.getItem('gL')||'en';
+let bk = JSON.parse(localStorage.getItem('gBK')||'[]');
+let dark = localStorage.getItem('gD')==='true';
+let curPage = 'home';
+let deferredPrompt = null;
+// Pagination state for chapter detail
+let curChapterIdx = 0;
+let curPage_v = 0;
+const VERSES_PER_PAGE = 10;
+
+// ===== LOAD DATA =====
+async function loadData() {
+  // Try fetch first (works on server / GitHub Pages)
+  try {
+    const res = await fetch('data/gita.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    GITA = await res.json();
+    return true;
+  } catch(e) {
+    console.warn('Fetch failed:', e.message);
+  }
+  // Fallback: try cache
+  if ('caches' in window) {
+    try {
+      const cache = await caches.open('gita-wisdom-v1');
+      const cached = await cache.match('data/gita.json');
+      if (cached) { GITA = await cached.json(); return true; }
+    } catch(e) {}
+  }
+  return false;
+}
+
+async function init() {
+  applyLang(lang);
+  applyDark(dark);
+  const ok = await loadData();
+  if (!ok) {
+    document.getElementById('loader').innerHTML = `
+      <div style="text-align:center;padding:40px 20px;max-width:400px">
+        <div style="font-size:3rem;margin-bottom:16px">⚠️</div>
+        <h2 style="font-family:'Cinzel Decorative',serif;color:var(--saffron-deep);margin-bottom:12px">Data Not Found</h2>
+        <p style="color:var(--ink-light);line-height:1.7;margin-bottom:20px">The <strong>data/gita.json</strong> file could not be loaded. Please make sure both files are in the same folder and served via a web server (GitHub Pages, localhost, etc.)</p>
+        <p style="font-size:0.88rem;color:var(--ink-light)">Run: <code style="background:var(--cream-dark);padding:2px 8px;border-radius:4px">python3 -m http.server</code></p>
+      </div>`;
+    return;
+  }
+  // Update stats
+  const total = GITA.chapters.reduce((s,c)=>s+c.verses.length,0);
+  document.getElementById('total-v').textContent = total;
+  renderGrids();
+  renderDaily();
+  // Hide loader
+  setTimeout(()=>{
+    document.getElementById('loader').classList.add('hide');
+    document.getElementById('app').style.display='';
+  }, 600);
+  // PWA
+  window.addEventListener('beforeinstallprompt', e=>{
+    e.preventDefault(); deferredPrompt=e;
+    document.getElementById('ibanner').classList.add('show');
+    document.getElementById('ibtn').onclick=()=>{
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(()=>{ document.getElementById('ibanner').classList.remove('show'); deferredPrompt=null; });
+    };
+  });
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+
+// ===== LANGUAGE =====
+function setLang(l){ lang=l; localStorage.setItem('gL',l); applyLang(l); renderGrids(); renderDaily(); if(curPage==='bookmarks') renderBookmarks(); }
+function applyLang(l){
+  document.querySelectorAll('.en').forEach(e=>e.style.display=l==='en'?'':'none');
+  document.querySelectorAll('.hi').forEach(e=>e.style.display=l==='hi'?'':'none');
+  document.getElementById('lEN').classList.toggle('on',l==='en');
+  document.getElementById('lHI').classList.toggle('on',l==='hi');
+  const si=document.getElementById('si'); if(si) si.placeholder=l==='en'?'karma, soul, duty, आत्मा…':'कर्म, आत्मा, धर्म, karma…';
+}
+
+// ===== DARK MODE =====
+function toggleDark(){ dark=!dark; localStorage.setItem('gD',dark); applyDark(dark); }
+function applyDark(on){ document.documentElement.setAttribute('data-theme',on?'dark':'light'); document.getElementById('dbtn').textContent=on?'☀':'🌙'; }
+
+// ===== PAGES =====
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('page-'+name).classList.add('on');
+  document.querySelectorAll(`[data-p="${name}"]`).forEach(b=>b.classList.add('on'));
+  curPage=name;
+  if(name==='bookmarks') renderBookmarks();
+  if(name==='search'){ document.getElementById('sres').innerHTML=''; }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ===== GRIDS =====
+function renderGrids(){
+  if(!GITA) return;
+  const h = GITA.chapters.map(ch=>{
+    const n=lang==='en'?ch.name_en:ch.name_hi, na=lang==='en'?ch.name_hi:ch.name_en;
+    return `<div class="ccard" onclick="openChapter(${ch.chapter-1})">
+      <div class="cnum">Ch.${String(ch.chapter).padStart(2,'0')}</div>
+      <div class="cname">${n}</div>
+      <div class="cname-hi">${na}</div>
+      <div class="cvc">${ch.verses.length} verses</div>
+    </div>`;
+  }).join('');
+  document.getElementById('grid-home').innerHTML=h;
+  document.getElementById('grid-chapters').innerHTML=h;
+}
+
+// ===== CHAPTER DETAIL =====
+function openChapter(idx){
+  if(!GITA) return;
+  curChapterIdx=idx; curPage_v=0;
+  renderChapterDetail();
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('page-detail').classList.add('on');
+  curPage='detail';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderChapterDetail(){
+  const ch=GITA.chapters[curChapterIdx];
+  const name=lang==='en'?ch.name_en:ch.name_hi, nameAlt=lang==='en'?ch.name_hi:ch.name_en;
+  const sub=lang==='en'?ch.subtitle_en:ch.subtitle_hi, sum=lang==='en'?ch.summary_en:ch.summary_hi;
+  document.getElementById('ch-hdr').innerHTML=`
+    <button class="back-btn" onclick="showPage('chapters')">← ${lang==='en'?'All Chapters':'सभी अध्याय'}</button>
+    <div class="ch-lbl">CHAPTER ${ch.chapter} OF 18</div>
+    <h2 class="ch-ttl">${name}</h2>
+    <div class="ch-hi">${nameAlt}</div>
+    <div class="ch-sub">${sub}</div>
+    <div class="ch-sum">${sum}</div>`;
+  renderVersePage();
+}
+
+function renderVersePage(){
+  const ch=GITA.chapters[curChapterIdx];
+  const total=ch.verses.length, pages=Math.ceil(total/VERSES_PER_PAGE);
+  const start=curPage_v*VERSES_PER_PAGE, end=Math.min(start+VERSES_PER_PAGE,total);
+  const pageVerses=ch.verses.slice(start,end);
+
+  const pagerHTML=()=>`<div class="vpager">
+    <span class="vpager-info">${lang==='en'?'Verses':'श्लोक'} ${start+1}–${end} ${lang==='en'?'of':'में से'} ${total}</span>
+    <div class="vpager-btns">
+      <button class="pg-btn" onclick="changePage(-1)" ${curPage_v===0?'disabled':''}>← ${lang==='en'?'Prev':'पिछला'}</button>
+      ${Array.from({length:pages},(_, i)=>`<button class="pg-btn${i===curPage_v?' active':''}" onclick="goPage(${i})">${i+1}</button>`).join('')}
+      <button class="pg-btn" onclick="changePage(1)" ${curPage_v>=pages-1?'disabled':''}>${lang==='en'?'Next':'अगला'} →</button>
+    </div>
+  </div>`;
+
+  document.getElementById('ch-pager').innerHTML = pages>1 ? pagerHTML() : '';
+  document.getElementById('ch-verses').innerHTML = pageVerses.map(v=>{
+    const tr=lang==='en'?v.translation_en:v.translation_hi, mn=lang==='en'?v.meaning_en:v.meaning_hi;
+    const bkd=bk.includes(`${curChapterIdx}_${v.verse}`);
+    return `<div class="vcard">
+      <div class="vmeta"><div class="vnum">${v.verse}</div><div class="vref">${lang==='en'?'Ch.':'अ.'} ${ch.chapter} · ${lang==='en'?'V.':'श्लोक'} ${v.verse}</div></div>
+      <div class="vsk">${v.sanskrit}</div>
+      <div class="vtr">${tr}</div>
+      ${mn?`<div class="vmn" id="vm_${v.verse}">${mn}</div>`:''}
+      <div class="vact">
+        ${mn?`<button class="bsm" onclick="toggleMn(${v.verse})">${lang==='en'?'💡 Meaning':'💡 अर्थ'}</button>`:''}
+        <button class="bsm${bkd?' bkd':''}" id="bk_${curChapterIdx}_${v.verse}" onclick="toggleBK(${curChapterIdx},${v.verse})">
+          ${bkd?(lang==='en'?'🔖 Saved':'🔖 सहेजा'):(lang==='en'?'🔖 Save':'🔖 सहेजें')}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('ch-pager-bot').innerHTML = pages>1 ? pagerHTML() : '';
+}
+
+function changePage(d){ curPage_v+=d; renderVersePage(); window.scrollTo({top:0,behavior:'smooth'}); }
+function goPage(n){ curPage_v=n; renderVersePage(); window.scrollTo({top:0,behavior:'smooth'}); }
+function toggleMn(vn){ const e=document.getElementById(`vm_${vn}`); if(e) e.classList.toggle('open'); }
+
+// ===== BOOKMARKS =====
+function toggleBK(cidx,vn){
+  const key=`${cidx}_${vn}`, idx=bk.indexOf(key), btn=document.getElementById(`bk_${cidx}_${vn}`);
+  if(idx===-1){ bk.push(key); if(btn){btn.classList.add('bkd');btn.textContent=lang==='en'?'🔖 Saved':'🔖 सहेजा';} showToast(lang==='en'?'Verse saved!':'श्लोक सहेजा!'); }
+  else{ bk.splice(idx,1); if(btn){btn.classList.remove('bkd');btn.textContent=lang==='en'?'🔖 Save':'🔖 सहेजें';} showToast(lang==='en'?'Removed':'हटाया गया'); }
+  localStorage.setItem('gBK',JSON.stringify(bk));
+}
+function renderBookmarks(){
+  const c=document.getElementById('bklist');
+  if(!GITA||!bk.length){ c.innerHTML=`<div class="bkempty"><div class="ei">🔖</div><p>${lang==='en'?'No bookmarks yet. Explore chapters and save your favourites!':'अभी तक कोई बुकमार्क नहीं। अध्यायों का अन्वेषण करें!'}</p></div>`; return; }
+  c.innerHTML='<div class="vlist">'+bk.map(key=>{
+    const [ci,vn]=key.split('_').map(Number);
+    const ch=GITA.chapters[ci]; if(!ch) return '';
+    const v=ch.verses.find(x=>x.verse===vn); if(!v) return '';
+    const tr=lang==='en'?v.translation_en:v.translation_hi, mn=lang==='en'?v.meaning_en:v.meaning_hi;
+    return `<div class="vcard">
+      <div class="rmeta">Ch.${ch.chapter} · ${lang==='en'?ch.name_en:ch.name_hi} · V.${vn}</div>
+      <div class="vsk">${v.sanskrit}</div>
+      <div class="vtr">${tr}</div>
+      ${mn?`<div class="vmn open">${mn}</div>`:''}
+      <div class="vact">
+        <button class="bsm bkd" onclick="toggleBK(${ci},${vn});renderBookmarks()">${lang==='en'?'🗑 Remove':'🗑 हटाएं'}</button>
+        <button class="bsm" onclick="openChapter(${ci})">${lang==='en'?'→ Open':'→ खोलें'}</button>
+      </div>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+// ===== DAILY VERSE =====
+function renderDaily(){
+  if(!GITA) return;
+  const all=[]; GITA.chapters.forEach((ch,ci)=>ch.verses.forEach(v=>all.push({ci,v,ch})));
+  const p=all[Math.floor(Date.now()/86400000)%all.length];
+  document.getElementById('dv-sk').textContent=p.v.sanskrit.split('\n').slice(0,2).join(' ');
+  document.getElementById('dv-tr').textContent=lang==='en'?p.v.translation_en:p.v.translation_hi;
+  document.getElementById('dv-ref').textContent=`— Ch.${p.ch.chapter}, V.${p.v.verse} · ${lang==='en'?p.ch.name_en:p.ch.name_hi}`;
+  document.getElementById('dcard')._ci=p.ci;
+}
+function openDailyVerse(){ const ci=document.getElementById('dcard')._ci; if(ci!=null) openChapter(ci); }
+
+// ===== SEARCH =====
+function liveSearch(q){ if(q.length<2){document.getElementById('sres').innerHTML='';return;} doSearch(q); }
+function doSearch(q){
+  if(!GITA) return;
+  q=q||document.getElementById('si').value; if(!q.trim()) return;
+  const ql=q.toLowerCase(), res=[];
+  GITA.chapters.forEach((ch,ci)=>ch.verses.forEach(v=>{
+    if([v.sanskrit,v.translation_en,v.translation_hi,v.meaning_en||'',v.meaning_hi||''].join(' ').toLowerCase().includes(ql))
+      res.push({ci,v,ch});
+  }));
+  const c=document.getElementById('sres');
+  if(!res.length){ c.innerHTML=`<div class="empty">${lang==='en'?`No results for "${q}"`:`"${q}" के लिए कोई परिणाम नहीं`}</div>`; return; }
+  c.innerHTML=`<div style="font-size:0.88rem;color:var(--saffron);margin-bottom:12px">${res.length} ${lang==='en'?'results found':'परिणाम मिले'}</div>`+
+  res.slice(0,15).map(r=>{
+    const tr=lang==='en'?r.v.translation_en:r.v.translation_hi, mn=lang==='en'?r.v.meaning_en:r.v.meaning_hi;
+    return `<div class="vcard">
+      <div class="rmeta">Ch.${r.ch.chapter} · ${lang==='en'?r.ch.name_en:r.ch.name_hi} · V.${r.v.verse}</div>
+      <div class="vsk">${r.v.sanskrit.split('\n')[0]}</div>
+      <div class="vtr">${tr}</div>
+      ${mn?`<div class="vmn open" style="display:block">${mn}</div>`:''}
+      <div class="vact"><button class="bsm" onclick="openChapter(${r.ci})">${lang==='en'?'→ Open Chapter':'→ अध्याय खोलें'}</button></div>
+    </div>`;
+  }).join('');
+}
+
+// ===== CHAT =====
+function fillChat(t){ document.getElementById('ci').value=t; document.getElementById('ci').focus(); }
+function sendChat(){
+  const inp=document.getElementById('ci'), raw=inp.value.trim(); if(!raw) return;
+  addMsg(raw,'u'); inp.value='';
+  setTimeout(()=>addMsg(processCmd(raw.toLowerCase()),'b'),200);
+}
+function addMsg(content,type){
+  const w=document.getElementById('cwin'), d=document.createElement('div');
+  d.className='cmsg '+type; d.innerHTML=`<div class="mb">${content}</div>`;
+  w.appendChild(d); w.scrollTop=w.scrollHeight;
+}
+function fmtV(ch,v){
+  const tr=lang==='en'?v.translation_en:v.translation_hi, mn=lang==='en'?v.meaning_en:v.meaning_hi;
+  return `<span style="font-size:0.78rem;color:var(--saffron)">📖 Ch.${ch.chapter} · ${lang==='en'?ch.name_en:ch.name_hi} · V.${v.verse}</span>
+<div class="vsk">${v.sanskrit}</div><div class="vtr">${tr}</div>${mn?`<div class="vmn">${mn}</div>`:''}`;
+}
+function processCmd(cmd){
+  if(!GITA) return '⏳ Data still loading…';
+  const all=[]; GITA.chapters.forEach(ch=>ch.verses.forEach(v=>all.push({ch,v})));
+  if(cmd==='help'||cmd==='h') return `<strong>📖 ${lang==='en'?'Commands':'आदेश'}:</strong><br><br>
+<b>chN</b> — ${lang==='en'?'First verse + summary of chapter N':'अध्याय N का पहला श्लोक'}<br>
+<b>chN vM</b> — ${lang==='en'?'Chapter N, verse M':'अध्याय N, श्लोक M'}<br>
+<b>chN all</b> — ${lang==='en'?'All verses of chapter N (max 5 shown)':'अध्याय N के सभी श्लोक'}<br>
+<b>daily</b> — ${lang==='en'?'Today\'s verse':'आज का श्लोक'}<br>
+<b>random</b> — ${lang==='en'?'Random verse':'यादृच्छिक श्लोक'}<br>
+<b>chapters</b> — ${lang==='en'?'List all chapters':'सभी अध्यायों की सूची'}`;
+  if(cmd==='daily'){ const p=all[Math.floor(Date.now()/86400000)%all.length]; return fmtV(p.ch,p.v); }
+  if(cmd==='random'){ const p=all[Math.floor(Math.random()*all.length)]; return fmtV(p.ch,p.v); }
+  if(cmd==='chapters'||cmd==='list') return '<strong>📚 18 Chapters:</strong><br><br>'+GITA.chapters.map(ch=>`<b>Ch.${ch.chapter}</b> — ${lang==='en'?ch.name_en:ch.name_hi}`).join('<br>');
+  const m=cmd.match(/^ch\s*(\d+)(?:\s+(?:v\s*(\d+)|(all)))?/);
+  if(m){
+    const n=parseInt(m[1]);
+    if(n<1||n>18) return `❌ Chapter ${n} not found. Enter 1–18.`;
+    const ch=GITA.chapters[n-1];
+    if(m[3]==='all'){
+      const shown=ch.verses.slice(0,5);
+      return `<strong>📖 Ch.${n}: ${lang==='en'?ch.name_en:ch.name_hi}</strong> (${ch.verses.length} verses)<br><br>`+
+        shown.map(v=>fmtV(ch,v)).join('<hr class="vs">')+
+        (ch.verses.length>5?`<br><em style="color:var(--saffron)">${lang==='en'?`…and ${ch.verses.length-5} more. Open the chapter to read all.`:`…और ${ch.verses.length-5} श्लोक। सभी पढ़ने के लिए अध्याय खोलें।`}</em>`:'');
+    }
+    if(m[2]){ const vn=parseInt(m[2]), v=ch.verses.find(x=>x.verse===vn); return v?fmtV(ch,v):`❌ Verse ${vn} not in Ch.${n}. (Ch.${n} has ${ch.verses.length} verses)`; }
+    const sum=lang==='en'?ch.summary_en:ch.summary_hi;
+    return `<strong>📖 Ch.${n}: ${lang==='en'?ch.name_en:ch.name_hi}</strong><br><br><em>${sum}</em><br><br>${fmtV(ch,ch.verses[0])}`;
+  }
+  return `❓ ${lang==='en'?'Unknown command. Try':'अज्ञात आदेश। प्रयास करें'} <em>help</em>`;
+}
+
+// ===== TOAST =====
+function showToast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+
+init();
+</script>
+</body>
+</html>
