@@ -6,7 +6,7 @@
   "display": "standalone",
   "background_color": "#FDF6E3",
   "theme_color": "#E8732A",
-  "orientation": "any",
+  "orientation": "portrait",
   "lang": "en",
   "categories": ["education", "books", "religion"],
   "icons": [
