@@ -1,4 +1,4 @@
-const CACHE = 'gita-wisdom-v6';
+const CACHE = 'gita-wisdom-v7';
 const CORE = ['./', './index.html', './manifest.json', './data/gita.json', './icons/icon-192x192.svg', './icons/icon-512x512.svg'];
 
 self.addEventListener('install', e => {
